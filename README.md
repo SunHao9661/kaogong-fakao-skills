@@ -11,8 +11,9 @@
 
 ## 立即下载
 
-- [下载考公 Skill](dist/gongkao-coach.skill)
-- [下载法考 Skill](dist/fakao-coach.skill)
+- [下载考公 Skill](https://github.com/SunHao9661/kaogong-fakao-skills/releases/download/v1.0.0/gongkao-coach.skill)
+- [下载法考 Skill](https://github.com/SunHao9661/kaogong-fakao-skills/releases/download/v1.0.0/fakao-coach.skill)
+- [查看正式 Release](https://github.com/SunHao9661/kaogong-fakao-skills/releases/tag/v1.0.0)
 - [阅读视频与公考 Skill 分析](VIDEO_ANALYSIS.md)
 
 `.skill` 文件是 ZIP 格式的技能包，可直接交给支持 Agent Skills 的工具导入，也可解压后放入 Skills 目录。
