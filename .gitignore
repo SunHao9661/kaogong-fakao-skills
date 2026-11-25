@@ -1,3 +1,8 @@
 .DS_Store
 __pycache__/
 *.pyc
+
+# 用户保留的历史工作包，不作为正式 Release 资产提交
+/dist/fakao-coach_01.zip
+/dist/gongkao-coach_01.zip
+/dist/gongkao-exam-coach.zip

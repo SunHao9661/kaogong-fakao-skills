@@ -1,123 +1,111 @@
-# 考公 × 法考 Agent Skills
+# 六项备考 Agent Skills
 
-公开仓库：<https://github.com/SunHao9661/kaogong-fakao-skills>
+六个可独立安装、独立触发的考试备考 Skill：
 
-两个功能同构、科目独立的备考 Skill：
+| Skill | 覆盖 |
+| --- | --- |
+| `kaoyan-coach` | 考研路线、择校、政治、英语一/二、数学一/二/三、统考与自命题专业课、复试、调剂 |
+| `teacher-qualification-coach` | 教师资格证类别、笔试、科目三、面试、重考和认定准备 |
+| `cet4-coach` | 四级笔试、新闻听力、阅读、写作、翻译、四级口语和重考 |
+| `cet6-coach` | 六级笔试、讲座听力、复杂阅读、长段翻译、六级口语和刷分 |
+| `gongkao-coach` | 国考、省考、事业单位、政治理论、行测模块、申论/综合应用、专业科目和面试 |
+| `fakao-coach` | 法考资格、客观题、主观题、年度线、法源版本、案例、文书和计划 |
 
-- **gongkao-coach**：公务员考试与考编，覆盖行测、申论和结构化面试。
-- **fakao-coach**：国家统一法律职业资格考试，覆盖客观题、主观题和各部门法。
-
-两个 Skill 都支持单题解析、模块训练、模拟卷、备考规划、错题复盘和考场策略。所有自编内容都会标注为模拟题；考试结构、时政、法条和程序期限要求查询官方最新来源。
-
-## 立即下载
-
-- [下载考公 Skill](https://github.com/SunHao9661/kaogong-fakao-skills/releases/download/v1.0.0/gongkao-coach.skill)
-- [下载法考 Skill](https://github.com/SunHao9661/kaogong-fakao-skills/releases/download/v1.0.0/fakao-coach.skill)
-- [查看正式 Release](https://github.com/SunHao9661/kaogong-fakao-skills/releases/tag/v1.0.0)
-- [阅读视频与公考 Skill 分析](VIDEO_ANALYSIS.md)
-
-`.skill` 文件是 ZIP 格式的技能包，可直接交给支持 Agent Skills 的工具导入，也可解压后放入 Skills 目录。
+每个 Skill 都按“先识别考试和版本，再按需读取参考资料”的方式设计。不会把不同考试、不同卷种或不同年份的规则混用。
 
 ## 安装
 
-### 方式一：导入 `.skill`
+### 直接下载
 
-在支持 `.skill` 导入的 Agent 中选择对应文件：
+- [考研 Skill](https://github.com/SunHao9661/kaogong-fakao-skills/releases/download/v2.0.0/kaoyan-coach.skill)
+- [教师资格证 Skill](https://github.com/SunHao9661/kaogong-fakao-skills/releases/download/v2.0.0/teacher-qualification-coach.skill)
+- [四级 Skill](https://github.com/SunHao9661/kaogong-fakao-skills/releases/download/v2.0.0/cet4-coach.skill)
+- [六级 Skill](https://github.com/SunHao9661/kaogong-fakao-skills/releases/download/v2.0.0/cet6-coach.skill)
+- [考公 Skill](https://github.com/SunHao9661/kaogong-fakao-skills/releases/download/v2.0.0/gongkao-coach.skill)
+- [法考 Skill](https://github.com/SunHao9661/kaogong-fakao-skills/releases/download/v2.0.0/fakao-coach.skill)
+
+### 导入 `.skill`
+
+仓库中的安装包位于 `dist/`：
 
 ```text
+dist/kaoyan-coach.skill
+dist/teacher-qualification-coach.skill
+dist/cet4-coach.skill
+dist/cet6-coach.skill
 dist/gongkao-coach.skill
 dist/fakao-coach.skill
 ```
 
-### 方式二：目录安装
+`.skill` 是 ZIP 格式安装包。可直接导入支持 Agent Skills 的工具。
 
-解压后，把两个目录放进 Agent 的 Skills 根目录。以 Codex 为例：
+### 目录安装
 
 ```text
+~/.codex/skills/kaoyan-coach/
+~/.codex/skills/teacher-qualification-coach/
+~/.codex/skills/cet4-coach/
+~/.codex/skills/cet6-coach/
 ~/.codex/skills/gongkao-coach/
 ~/.codex/skills/fakao-coach/
 ```
 
-### 方式三：下载源码
-
-```bash
-git clone https://github.com/SunHao9661/kaogong-fakao-skills.git
-cp -R kaogong-fakao-skills/gongkao-coach ~/.codex/skills/
-cp -R kaogong-fakao-skills/fakao-coach ~/.codex/skills/
-```
-
-## 使用
-
-安装后直接使用自然语言：
+## 使用示例
 
 ```text
-这道资料分析怎么做，给我最短步骤和易错点。
-根据我的正确率和每天 3 小时，排一份 8 周考公计划。
-按当年大纲出一套自编法考混合模拟题，标明不是官方真题。
-批改这份法考主观题答案，按争点、法源、事实适用和结论反馈。
+2027 考研英语二和数学三怎么安排 12 周？
+初中数学教师资格证科目三怎么准备？
+四级 425 算及格吗？
+六级讲座听力总是跟不上，给我一个精听流程。
+2027 国考行政执法类申论怎么练？
+2026 法考客观题多少分合格？
 ```
 
-## 功能结构
+## 设计原则
 
-| 能力 | 考公 | 法考 |
-| --- | --- | --- |
-| 单题解析 | 行测与申论 | 客观题与案例 |
-| 模块训练 | 资料、数量、言语、判断、常识 | 民法、刑法、程序、行政、商经知、理论、三国法 |
-| 模拟组卷 | 行测/申论 | 客观题/主观题 |
-| 规划复盘 | 阶段计划、错题归因 | 客观主观协同、批改重写 |
-| 真实性控制 | 真题/模拟题区分 | 法律/司法解释/学理观点区分 |
+- **独立安装**：六个 Skill 互不作为必需依赖。
+- **先路由再作答**：先识别考试、年份、地区、卷种、学段或职位类别。
+- **渐进加载**：入口只保留关键约束，详细方法放在对应参考文件。
+- **来源分层**：官方材料、用户真题、第三方整理和自编模拟题分开。
+- **缺口不猜**：动态政策、院校自命题、地方资格和法源版本无法核实时明确说明。
 
-## 仓库结构
+## 明确边界
 
-```text
-.
-├── gongkao-coach/
-│   ├── SKILL.md
-│   ├── README.md
-│   ├── examples/
-│   └── references/
-├── fakao-coach/
-│   ├── SKILL.md
-│   ├── README.md
-│   ├── examples/
-│   └── references/
-├── dist/
-│   ├── gongkao-coach.skill
-│   └── fakao-coach.skill
-├── scripts/
-│   └── validate_skills.py
-└── VIDEO_ANALYSIS.md
-```
+- 全国统考考研英语只有英语一、英语二，没有“英语三”；数学有数学一、二、三。
+- 教师资格证不是教师招聘、特岗或教师编。
+- CET 不设官方及格线；425 是目标点、常见报名或使用门槛。
+- 国考、省考、事业单位不是同一套卷。
+- 法考不公布试题及参考答案，回忆版不能冒充官方原卷。
+- 法考年度合格线不能永久化。
+- 本项目不是考试机构官方产品，也不宣称收录全部历史真题。
 
 ## 验证
-
-本地运行：
 
 ```bash
 python3 scripts/validate_skills.py
 ```
 
-校验内容包括：
+验证内容：
 
-- `SKILL.md` frontmatter。
-- 名称格式和必需字段。
+- 六个 `SKILL.md` frontmatter 和名称。
 - 所有仓库内 Markdown 链接。
-- 两个 `.skill` 安装包是否存在且内容完整。
+- 六个安装包存在、CRC 正常。
+- 包内文件与源目录一致。
+- 不包含额外缓存或用户 ZIP。
 
-GitHub Actions 会在每次提交后自动执行同一检查。
+本次制作的完整验证结果见 [research/validation-report.md](research/validation-report.md)。
+
+系统 Skill 校验器还会分别检查六个目录：
+
+```bash
+python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py kaoyan-coach
+python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py teacher-qualification-coach
+python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py cet4-coach
+python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py cet6-coach
+python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py gongkao-coach
+python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py fakao-coach
+```
 
 ## 开源许可
 
-本项目使用 [MIT License](LICENSE)。你可以使用、复制、修改、合并、发布、分发、再许可和销售本项目，只需保留版权与许可声明。
-
-## 使用边界
-
-- 本项目是备考训练工具，不是官方考试机构产品。
-- 自编题目不会冒充官方真题。
-- 官方考试信息以国家公务员局、地方组织/人社部门、司法部及当年考试大纲为准。
-- 法条序号、程序期限和司法观点未核实时不会给出精确值。
-- 法考内容用于考试学习，不构成正式法律意见。
-
-## 参考与独立性
-
-视频与公开仓库分析见 [VIDEO_ANALYSIS.md](VIDEO_ANALYSIS.md)。本项目保留同类“技能包 + 按需知识文件 + 实战示例”的产品结构，但工作流、参考资料和实现文本均为独立编写，与视频作者及原仓库无隶属关系。
+本项目使用 [MIT License](LICENSE)。你可以使用、复制、修改、合并、发布、分发、再许可和销售本项目，但需保留版权与许可声明。

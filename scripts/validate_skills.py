@@ -1,19 +1,26 @@
 #!/usr/bin/env python3
-"""Validate the two Skill packages and their downloadable archives."""
+"""Validate the six Skill packages and their downloadable archives."""
 
 from __future__ import annotations
 
 import re
 import sys
-import tempfile
 import zipfile
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parent.parent
-SKILLS = ("gongkao-coach", "fakao-coach")
+SKILLS = (
+    "kaoyan-coach",
+    "teacher-qualification-coach",
+    "cet4-coach",
+    "cet6-coach",
+    "gongkao-coach",
+    "fakao-coach",
+)
 NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
+IGNORED_PACKAGE_FILES = {".DS_Store", "Thumbs.db"}
 
 
 def parse_frontmatter(text: str) -> dict[str, str]:
@@ -34,6 +41,16 @@ def parse_frontmatter(text: str) -> dict[str, str]:
     return values
 
 
+def source_files(root: Path) -> dict[str, bytes]:
+    files: dict[str, bytes] = {}
+    for path in sorted(root.rglob("*")):
+        if not path.is_file() or path.name in IGNORED_PACKAGE_FILES:
+            continue
+        relative = path.relative_to(root).as_posix()
+        files[relative] = path.read_bytes()
+    return files
+
+
 def check_skill(skill_name: str) -> list[str]:
     errors: list[str] = []
     root = ROOT / skill_name
@@ -41,6 +58,12 @@ def check_skill(skill_name: str) -> list[str]:
 
     if not skill_file.is_file():
         return [f"{skill_name}: missing SKILL.md"]
+    if not (root / "README.md").is_file():
+        errors.append(f"{skill_name}: missing README.md")
+    if not (root / "references").is_dir():
+        errors.append(f"{skill_name}: missing references directory")
+    if not (root / "examples" / "cases.md").is_file():
+        errors.append(f"{skill_name}: missing examples/cases.md")
 
     text = skill_file.read_text(encoding="utf-8")
     try:
@@ -70,28 +93,40 @@ def check_skill(skill_name: str) -> list[str]:
         errors.append(f"{skill_name}: missing {archive.relative_to(ROOT)}")
         return errors
 
+    expected_files = source_files(root)
+    expected_archive_names = {
+        f"{skill_name}/{relative}" for relative in expected_files
+    }
     try:
         with zipfile.ZipFile(archive) as bundle:
             names = set(bundle.namelist())
-            required = {
-                f"{skill_name}/SKILL.md",
-                f"{skill_name}/README.md",
-                f"{skill_name}/examples/cases.md",
+            missing = expected_archive_names - names
+            extra = {
+                name
+                for name in names
+                if name not in expected_archive_names
+                and not name.endswith("/")
+                and Path(name).name not in IGNORED_PACKAGE_FILES
             }
-            missing = required - names
             if missing:
                 errors.append(
                     f"{skill_name}: archive missing {', '.join(sorted(missing))}"
                 )
+            if extra:
+                errors.append(
+                    f"{skill_name}: archive contains unexpected files "
+                    f"{', '.join(sorted(extra))}"
+                )
             if bundle.testzip() is not None:
                 errors.append(f"{skill_name}: archive CRC check failed")
 
-            with tempfile.TemporaryDirectory() as temporary:
-                bundle.extractall(temporary)
-                extracted_skill = Path(temporary) / skill_name / "SKILL.md"
-                if extracted_skill.read_bytes() != skill_file.read_bytes():
+            for relative, source_bytes in expected_files.items():
+                archive_name = f"{skill_name}/{relative}"
+                if archive_name not in names:
+                    continue
+                if bundle.read(archive_name) != source_bytes:
                     errors.append(
-                        f"{skill_name}: archive SKILL.md differs from source"
+                        f"{skill_name}: archive file differs from source: {relative}"
                     )
     except zipfile.BadZipFile:
         errors.append(f"{skill_name}: archive is not a valid ZIP")
@@ -110,7 +145,10 @@ def main() -> int:
             print(f"- {error}")
         return 1
 
-    print("Validation passed: 2 skills, all links, and 2 installable archives.")
+    print(
+        "Validation passed: "
+        f"{len(SKILLS)} skills, all links, and {len(SKILLS)} installable archives."
+    )
     return 0
 
 
